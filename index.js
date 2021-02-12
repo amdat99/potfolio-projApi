@@ -12,16 +12,25 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+
 const knex = require('knex')
 
+// const db = knex({
+// // client: 'pg',
+// //   connection: {
+// //     host : '127.0.0.1',
+// //     user : 'postgres',
+// //     password : '7867',
+// //     database : 'chatapp'
+// //   }
+
 const db = knex({
-client: 'pg',
+  client: 'pg',
   connection: {
-    host : '127.0.0.1',
-    user : 'postgres',
-    password : '7867',
-    database : 'chatapp'
-  }
+ connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }}
 });
 
 app.use(helmet())
@@ -120,8 +129,8 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 
 	
  
-app.listen( 3000 , ()=>{
-	console.log(`'app is on 3000 '`);
+app.listen( process.env.PORT|| 3000 , ()=>{
+	console.log(`app is on port ${process.env.PORT}`);
 })
 
 
