@@ -76,12 +76,12 @@ app.post('/payment', (req, res) => {
 app.post('/addmessages',(req,res)=>{  // add messages to database
 	const{message,userName, userId, messageId, image} = req.body;
 	
-	if(image){
-		var http = new XMLHttpRequest(); 
-		http.open('HEAD', image, false); 
-			http.send(); 
-		return http.status != 404;
-}
+// 	if(image){
+// 		var http = new XMLHttpRequest(); 
+// 		http.open('HEAD', image, false); 
+// 			http.send(); 
+// 		return http.status != 404;
+// }
 if (!message ||!userName || !userId || !messageId){
 		return res.status(400).json('incorrect form submission')
     }
