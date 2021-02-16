@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon server.js --legacy-watch",
     "start:dev": "nodemon index.js"
   },
   "author": "",
@@ -18,11 +18,17 @@
     "cors": "^2.8.5",
     "dotenv": "7.0.0",
     "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "helmet": "^4.3.1",
     "image-url-validator": "^1.0.4",
     "knex": "^0.21.13",
+    "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
-    "stripe": "6.28.0"
+    "socket.io": "^3.1.1",
+    "stripe": "6.28.0",
+    "valid-url": "^1.0.9",
+    "websocket": "^1.0.33",
+    "ws": "^7.4.3"
   }
 }

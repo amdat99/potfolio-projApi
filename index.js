@@ -1,12 +1,23 @@
-const http2 = require(
-	'http2')
+
+
+
+const http = require('http');
 const express = require('express')
 const helmet = require("helmet")
 const cors = require('cors')
-const app = express()
 const bodyParser = require('body-parser')
-const fetch = require('node-fetch');
-const isImageURL = require('image-url-validator').default;
+
+
+const app = express()
+
+// const server = require('http').createServer(app);
+// const options = { /* ... */ };
+// const io = require("socket.io")(httpServer, {
+// 	cors: {
+// 	  origin: "http://localhost:3001",
+// 	  methods: ["GET", "POST"]
+// 	}
+//   });
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
@@ -50,6 +61,29 @@ const corsOptions = {
 }
 app.use(cors())
 
+
+// io.on('connection', socket => {  
+// 	socket.emit('id', socket.id)
+// 	socket.on("send message", body =>{
+// 		console.log('response')
+// 		io.emit("message", body)
+// 	})
+// })
+
+// // 	socket.on('message', ({ recipients, message }) => {
+// // 		recipients.forEach(recipient =>{
+// // 			const newRecipients = recipients.filter(reciever => reciever !==
+// // 				recipient)
+// // 			newRecipients.push(id)
+// // 			socket.broadcast.to(recipient).emit('message',{
+// // 				recipients: newRecipients, sender: id, message
+// // 			})
+// // 		})
+// // 	})
+	                                   
+// // })
+
+
 app.get('/', (req,res)=>{
 res.send('success')
 })
@@ -75,13 +109,11 @@ app.post('/payment', (req, res) => {
 
 app.post('/addmessages',(req,res)=>{  // add messages to database
 	const{message,userName, userId, messageId, image} = req.body;
-	
-// 	if(image){
-// 		var http = new XMLHttpRequest(); 
-// 		http.open('HEAD', image, false); 
-// 			http.send(); 
-// 		return http.status != 404;
-// }
+	const regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+
+	if(regex.test(!image)){
+		return res.status(400).json('incorrect form submission')
+	}
 if (!message ||!userName || !userId || !messageId){
 		return res.status(400).json('incorrect form submission')
     }
@@ -98,6 +130,8 @@ if (!message ||!userName || !userId || !messageId){
 	})
 		.catch(err=> res.status(400).json(err))
 })
+
+
 
 app.post('/fetchmessages', (req,res)=>{  // fetch message data
 	db.select('messageid','message','name','likes','date','image').from('messages')
@@ -130,7 +164,7 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 	
  
 app.listen( process.env.PORT|| 3000 , ()=>{
-	console.log(`app is on port ${process.env.PORT}`);
+	console.log(`app is on port 3000`);
 })
 
 
