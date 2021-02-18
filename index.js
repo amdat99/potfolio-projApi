@@ -6,7 +6,9 @@ const express = require('express')
 const helmet = require("helmet")
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const fetch = require('node-fetch');
 
+const AccuWeather = require('accuweather')
 
 const app = express()
 
@@ -23,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+const key = process.env.ACCU_WEATHER_KEY
 
 const knex = require('knex')
 
@@ -103,9 +106,45 @@ app.post('/payment', (req, res) => {
 	  }
 	});
   });
-  
 
   
+
+
+  app.post('/weathering',(req,res)=>{ 
+	
+	const{location} = req.body;
+	const url = 'http://dataservice.accuweather.com/locations/v1/cities/search'
+    const params = `?apikey=${key}&q=${location}`
+	fetch(url+params)
+	.then(res => res.json())
+	// .then(data => res.json(data[0]) )
+    .then(json => console.log(json));
+		})
+
+
+app.post('/weatherdata',(req,res)=>{ 
+	
+	const{locationKey} = req.body;
+	const url = 'http://dataservice.accuweather.com/currentconditions/v1/' 
+	const  params = `${locationKey}?apikey=${key}`
+	fetch(url+params)
+	.then(res => res.json())
+	.then(data => res.json(data[0]) )
+	
+	})
+// 	const locationData = data[0]
+// 	forecast.localkey(locationData.Key)				// http://apidev.accuweather.com/developers/locationsAPIguide
+// 	.time('hourly/1hour')			// http://apidev.accuweather.com/developers/forecastsAPIguide
+// 	.language("en")					// http://apidev.accuweather.com/developers/languages
+// 	.metric(true)					// Boolean value (true or false) that specifies to return the data in either metric (=true) or imperial units 
+// 	.details(true)					// Boolean value (true or false) that specifies whether or not to include a truncated version of the forecasts object or the full object (details = true)
+// 	.get()
+// 	.then(res => {
+// 		return(res)
+// 	})
+// 	.catch(err => {
+// 		console.log(err)
+
 
 app.post('/addmessages',(req,res)=>{  // add messages to database
 	const{message,userName, userId, messageId, image} = req.body;
@@ -124,7 +163,7 @@ if (!message ||!userName || !userId || !messageId){
 		messageid: messageId + Math.random(),
 		image: image,
 		likes: 0,
-		date: new Date()
+		date: new Date().toLocaleTimeString("en-US")
 }) 	.then(data=>{
 		res.json(data[0]);
 	})
@@ -144,7 +183,7 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 
 
 
-	app.put('/incrementlikes', (req, res) => { // imcrement message likes
+app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		const{ messageid } = req.body;
 	if (!messageid){
       return res.status(400).json('incorrect form submission')
@@ -163,8 +202,8 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 
 	
  
-app.listen( process.env.PORT|| 3000 , ()=>{
-	console.log(`app is on port 3000`);
+app.listen( process.env.PORT|| 4000 , ()=>{
+	console.log(`app is on port 4000`);
 })
 
 
