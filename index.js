@@ -58,7 +58,7 @@ app.use(express.json());
 
 app.use(bodyParser.json());
 
-const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/']
+const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/','https://quiet-inlet-52952.herokuapp.com/']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
