@@ -148,11 +148,11 @@ app.post('/weatherdata',(req,res)=>{
 
 app.post('/addmessages',(req,res)=>{  // add messages to database
 	const{message,userName, userId, messageId, image} = req.body;
-	const regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+	// const regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
 
-	if(regex.test(!image)){
-		return res.status(400).json('incorrect form submission')
-	}
+	// if(regex.test(!image)){
+	// 	return res.status(400).json('incorrect form submission')
+	// }
 if (!message ||!userName || !userId || !messageId){
 		return res.status(400).json('incorrect form submission')
     }
