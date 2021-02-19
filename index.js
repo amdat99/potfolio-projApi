@@ -8,6 +8,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
 const enforce = require('express-sslify')
+const compression = require('compression')
 
 
 
