@@ -25,7 +25,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const key = process.env.ACCU_WEATHER_KEY
+const key = process.env
 
 const knex = require('knex')
 
@@ -163,7 +163,7 @@ if (!message ||!userName || !userId || !messageId){
 		messageid: messageId + Math.random(),
 		image: image,
 		likes: 0,
-		date: new Date().toLocaleTimeString("en-US")
+		date: new Date();
 }) 	.then(data=>{
 		res.json(data[0]);
 	})
