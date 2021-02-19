@@ -7,8 +7,9 @@ const helmet = require("helmet")
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
+const enforce = require('enforce')
 
-const AccuWeather = require('accuweather')
+
 
 const app = express()
 
@@ -25,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const key = process.env
+const key = process.env.ACCU_WEATHER_KEY;
 
 const knex = require('knex')
 
@@ -49,10 +50,10 @@ const db = knex({
 
 app.use(helmet())
 app.use(express.json());
-
+app.use(enforce.HTTPS({ trustProtoHeader: true}))
 app.use(bodyParser.json());
 
-const whitelist = ['http://localhost:4000']
+const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -62,7 +63,7 @@ const corsOptions = {
     }
   }
 }
-app.use(cors())
+app.use(cors(corsOptions))
 
 
 // io.on('connection', socket => {  
@@ -117,8 +118,8 @@ app.post('/payment', (req, res) => {
     const params = `?apikey=${key}&q=${location}`
 	fetch(url+params)
 	.then(res => res.json())
-	// .then(data => res.json(data[0]) )
-    .then(json => console.log(json));
+	.then(data => res.json(data[0]) )
+   
 		})
 
 
@@ -130,20 +131,9 @@ app.post('/weatherdata',(req,res)=>{
 	fetch(url+params)
 	.then(res => res.json())
 	.then(data => res.json(data[0]) )
+	// .then(json => console.log(json));
 	
 	})
-// 	const locationData = data[0]
-// 	forecast.localkey(locationData.Key)				// http://apidev.accuweather.com/developers/locationsAPIguide
-// 	.time('hourly/1hour')			// http://apidev.accuweather.com/developers/forecastsAPIguide
-// 	.language("en")					// http://apidev.accuweather.com/developers/languages
-// 	.metric(true)					// Boolean value (true or false) that specifies to return the data in either metric (=true) or imperial units 
-// 	.details(true)					// Boolean value (true or false) that specifies whether or not to include a truncated version of the forecasts object or the full object (details = true)
-// 	.get()
-// 	.then(res => {
-// 		return(res)
-// 	})
-// 	.catch(err => {
-// 		console.log(err)
 
 
 app.post('/addmessages',(req,res)=>{  // add messages to database
