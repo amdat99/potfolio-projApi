@@ -68,7 +68,7 @@ const corsOptions = {
     }
   }
 }
-app.use(cors(corsOptions))
+app.use(cors())
 
 
 // io.on('connection', socket => {  
