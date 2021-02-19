@@ -7,7 +7,7 @@ const helmet = require("helmet")
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
-const enforce = require('enforce')
+const enforce = require('express-sslify')
 
 
 
@@ -23,6 +23,11 @@ const app = express()
 //   });
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
+if (process.env.NODE_ENV === 'production') {
+	app.use(compression);
+	app.use(enforce.HTTPS({ trustProtoHeader: true }));
+}
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -50,7 +55,7 @@ const db = knex({
 
 app.use(helmet())
 app.use(express.json());
-app.use(enforce.HTTPS({ trustProtoHeader: true}))
+
 app.use(bodyParser.json());
 
 const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/']
