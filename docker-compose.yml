@@ -3,12 +3,11 @@ services:
   smart-brain-api:
     container_name: backend
     #image: node:8.11.1 use docker-compose up --build to build
-    build: C:\Users\aamir\pokeBattle\smartbrainapi1
+    build: ./
     command: npm start 
-    working_dir: /usr/src/smart-brain-api
+    working_dir: /usr/src/portfolio-api
     environment:
       POSTGRES_URI: postgres://postgres:7867@postgres:5432/smart-brain-docker
-      REDIS_URI: redis://redis:yourpassword@redis:6379
   # links:
     #   - postgres
     #   - redis
@@ -29,13 +28,3 @@ services:
       POSTGRES_HOST: postgres
     ports:
       - "5432:5432"
-  redis:
-    image: redis
-    command: redis-server --requirepass yourpassword
-    ports:
-      - "6379:6379"
-
-  # adminer:
-  #   image: adminer
-  #   ports:
-  #    - 5433:5433
