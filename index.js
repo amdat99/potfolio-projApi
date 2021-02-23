@@ -10,18 +10,8 @@ const fetch = require('node-fetch');
 const enforce = require('express-sslify')
 
 
-
-
 const app = express()
 
-// const server = require('http').createServer(app);
-// const options = { /* ... */ };
-// const io = require("socket.io")(httpServer, {
-// 	cors: {
-// 	  origin: "http://localhost:3001",
-// 	  methods: ["GET", "POST"]
-// 	}
-//   });
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
@@ -40,7 +30,7 @@ const knex = require('knex')
 // //   connection: {
 // //     host : '127.0.0.1',
 // //     user : 'postgres',
-// //     password : '7867',
+// //     password : '',
 // //     database : 'chatapp'
 // //   }
 
@@ -70,27 +60,6 @@ const corsOptions = {
 }
 app.use(cors())
 
-
-// io.on('connection', socket => {  
-// 	socket.emit('id', socket.id)
-// 	socket.on("send message", body =>{
-// 		console.log('response')
-// 		io.emit("message", body)
-// 	})
-// })
-
-// // 	socket.on('message', ({ recipients, message }) => {
-// // 		recipients.forEach(recipient =>{
-// // 			const newRecipients = recipients.filter(reciever => reciever !==
-// // 				recipient)
-// // 			newRecipients.push(id)
-// // 			socket.broadcast.to(recipient).emit('message',{
-// // 				recipients: newRecipients, sender: id, message
-// // 			})
-// // 		})
-// // 	})
-	                                   
-// // })
 
 
 app.get('/', (req,res)=>{
@@ -158,7 +127,7 @@ if (!message ||!userName || !userId || !messageId){
 		messageid: messageId + Math.random(),
 		image: image,
 		likes: 0,
-		date: new Date()
+		date: new Date.toDateString()
 }) 	.then(data=>{
 		res.json(data[0]);
 	})
@@ -192,12 +161,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		
 	})
 
-	
-
-
-	
- 
-app.listen( process.env.PORT|| 4000 , ()=>{
+	app.listen( process.env.PORT|| 4000 , ()=>{
 	console.log(`app is on port 4000`);
 })
 
