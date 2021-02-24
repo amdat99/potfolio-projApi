@@ -1,5 +1,7 @@
 
 
+// if using docker the fetch path needs to be changed to localhost:4000 in the front-end messages.sagas.js
+// and weatherbox.js files. You also need to use the third db const below
 
 const http = require('http');
 const express = require('express')
@@ -11,6 +13,7 @@ const enforce = require('express-sslify')
 
 
 const app = express()
+
 
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
@@ -26,22 +29,36 @@ const key = process.env.ACCU_WEATHER_KEY;
 const knex = require('knex')
 
 // const db = knex({
-// // client: 'pg',
-// //   connection: {
-// //     host : '127.0.0.1',
-// //     user : 'postgres',
-// //     password : '',
-// //     database : 'chatapp'
-// //   }
+// client: 'pg',
+//   connection: {
+//     host : '127.0.0.1',
+//     user : 'postgres',
+//     password : '7867',
+//     database : 'chatapp'
+//   }
+// })
 
-const db = knex({
-  client: 'pg',
-  connection: {
- connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }}
-});
+// const db = knex({           //comment this if using docker
+//   client: 'pg',
+//   connection: {
+//  connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }}
+// });
+
+const db = knex({               // uncomment this if using docker
+	client: 'pg',
+	connection: {
+	  host : '127.0.0.1',
+	  user : 'postgres',
+	  password : '7867',
+	  database : 'chatapp'
+	},
+	connection: process.env.POSTGRES_URI
+  });
+
+
 
 app.use(helmet())
 app.use(express.json());

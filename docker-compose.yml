@@ -1,30 +1,30 @@
 
 services:
-  smart-brain-api:
-    container_name: backend
-    #image: node:8.11.1 use docker-compose up --build to build
+  chatapp-api:
+    container_name: portfolio-backend
+    image: node:8.11.1  # use docker-compose up --build to build
     build: ./
     command: npm start 
-    working_dir: /usr/src/portfolio-api
+    working_dir: /usr/src/chatapp-api
     environment:
-      POSTGRES_URI: postgres://postgres:7867@postgres:5432/smart-brain-docker
+      POSTGRES_URI: postgres://postgres:7867@postgres:5432/chatapp-docker
   # links:
     #   - postgres
     #   - redis
     ports: 
-      - "3000:3000"
+      - "4000:4000"
     volumes:
-      - C:\Users\aamir\pokeBattle\smartbrainapi1:/usr/src/smart-brain-api
+      - ./:/usr/src/chatapp-api
 
      # 'postgres'
   db:
-    container_name: postgres
+    container_name: postgres-chatapp
     build: ./postgres
     restart: always
     environment:
       POSTGRES_PASSWORD: 7867
       POSTGRES_USER: postgres
-      POSTGRES_DB: smart-brain-docker
+      POSTGRES_DB: chatapp-docker
       POSTGRES_HOST: postgres
     ports:
       - "5432:5432"

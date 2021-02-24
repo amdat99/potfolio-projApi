@@ -1,11 +1,11 @@
 FROM node:8.11.1
 
-WORKDIR /usr/src/portfolio-api
+WORKDIR /usr/src/chatapp-api
 
-COPY package.json /usr/src/portfolio-api
+COPY package.json /usr/src/chatapp-api
 RUN npm install
 
-COPY . /usr/src/portfolio-api
+COPY . /usr/src/chatapp-api
 
 RUN npm install
 
