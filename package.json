@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js --legacy-watch"
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +21,7 @@
     "express-sslify": "^1.2.0",
     "express-ws": "^4.0.0",
     "helmet": "^4.3.1",
-    "knex": "^0.21.1",
+    "knex": "^0.21.13",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
