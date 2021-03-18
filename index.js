@@ -14,8 +14,6 @@ const enforce = require('express-sslify')
 
 const app = express()
 
-
-
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 if (process.env.NODE_ENV === 'production') {
@@ -77,8 +75,6 @@ const corsOptions = {
 }
 app.use(cors())
 
-
-
 app.get('/', (req,res)=>{
 res.send('success')
 })
@@ -100,9 +96,7 @@ app.post('/payment', (req, res) => {
   });
 
   
-
-
-  app.post('/weathering',(req,res)=>{ 
+app.post('/weathering',(req,res)=>{ 
 	
 	const{location} = req.body;
 	const url = 'http://dataservice.accuweather.com/locations/v1/cities/search'
@@ -152,7 +146,6 @@ if (!message ||!userName || !userId || !messageId){
 })
 
 
-
 app.post('/fetchmessages', (req,res)=>{  // fetch message data
 	db.select('messageid','message','name','likes','date','image').from('messages')
 	.orderByRaw('date DESC')
@@ -179,7 +172,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	})
 
 	app.listen( process.env.PORT|| 4000 , ()=>{
-	console.log(`app is on port 4000`);
+	console.log(`app  on port 4000`);
 })
 
 
