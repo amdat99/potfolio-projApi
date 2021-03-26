@@ -9,10 +9,17 @@ const helmet = require("helmet")
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const fetch = require('node-fetch');
+const socket = require('socket.io')
 const enforce = require('express-sslify')
 
-
 const app = express()
+const server = app.listen( process.env.PORT|| 4000 , ()=>{
+	console.log(`app  on port 4000`);
+})
+
+
+const io = socket(server)
+
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
@@ -48,7 +55,7 @@ const knex = require('knex')
 const db = knex({               // uncomment this if using docker
 	client: 'pg',
 	connection: {
-	  host : '127.0.0.1',
+	  host : 'localhost',
 	  user : 'postgres',
 	  password : '7867',
 	  database : 'chatapp'
@@ -171,9 +178,49 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		
 	})
 
-	app.listen( process.env.PORT|| 4000 , ()=>{
-	console.log(`app  on port 4000`);
-})
+
+
+
+	
+	let rooms = [1,2,3]      // websockets
+	
+	app.post('/fetchrooms', (req,res)=>{  // fetch room data
+		  res.json(rooms);
+		})
+		
+	app.post('/addroom',(req,res)=>{  
+	   let room = req.body.room
+	   rooms.push(room)
+	  
+	   })
+	
+	 io.on('connection', (socket) => {
+	   let socketRoom;
+	   console.log(`Connected ${socket.id}`);
+	   
+	   socket.on('disconnect', () =>
+		  console.log(`Disconnected ${socket.id}`));
+	   
+		  socket.on('join', (room) => {
+		  console.log(` ${socket.id} joined ${room}`);
+		  socket.join(room);
+		  socketRoom = room;
+	   });
+	
+	   socket.on('switch', (data) => {
+		  const { prevRoom, nextRoom } = data;
+		  if (prevRoom) socket.leave(prevRoom);
+		  if (nextRoom) socket.join(nextRoom);
+		  socketRoom = nextRoom;
+		});
+	   
+	   socket.on('chat', (data) => {
+		  const { message } = data;
+		  console.log(`message: ${message}, room: ${socketRoom}`);
+		  io.to(socketRoom).emit('chat', message, socketRoom );
+	   });
+	});
+
 
 
 
