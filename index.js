@@ -146,7 +146,7 @@ if (!message ||!userName || !userId || !messageId){
 		messageid: messageId + Math.random(),
 		image: image,
 		likes: 0,
-		date: new Date().toDateString()
+		date: new Date()
 }) 	.then(data=>{
 		res.json(data[0]);
 	})
