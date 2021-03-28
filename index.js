@@ -44,25 +44,25 @@ const knex = require('knex')
 //   }
 // })
 
-// const db = knex({           //comment this if using docker
-//   client: 'pg',
-//   connection: {
-//  connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }}
-// });
+const db = knex({           //comment this if using docker // uncomment for postgres
+  client: 'pg',
+  connection: {
+ connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }}
+});
 
-const db = knex({               // uncomment this if using docker
-	client: 'pg',
-	connection: {
-	  host : 'localhost',
-	  user : 'postgres',
-	  password : '7867',
-	  database : 'chatapp'
-	},
-	connection: process.env.POSTGRES_URI
-  });
+// const db = knex({               // uncomment this if using docker
+// 	client: 'pg',
+// 	connection: {
+// 	  host : 'localhost',
+// 	  user : 'postgres',
+// 	  password : '7867',
+// 	  database : 'chatapp'
+// 	},
+// 	connection: process.env.POSTGRES_URI
+//   });
 
 
 
@@ -146,7 +146,7 @@ if (!message ||!userName || !userId || !messageId){
 		messageid: messageId + Math.random(),
 		image: image,
 		likes: 0,
-		date: new Date()
+		date: new Date().toDateString()
 }) 	.then(data=>{
 		res.json(data[0]);
 	})
