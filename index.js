@@ -226,7 +226,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	 db('videochat').returning('*').where('videoid','=',videoId)
 			.update({ 'senderstatus': 'missedcall'})
 			.then(data=>{
-				console.log(likes)
+				console.log(data)
 				res.json(data);
 				
 			})
