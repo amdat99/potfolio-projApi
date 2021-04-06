@@ -36,24 +36,24 @@ const key = process.env.ACCU_WEATHER_KEY;
 
 const knex = require('knex')
 
-const db = knex({
-client: 'pg',
-  connection: {
-    host : '127.0.0.1',
-    user : 'postgres',
-    password : '7867',
-    database : 'chatapp'
-  }
-})
-
-// const db = knex({           //comment this if using docker // uncomment for heroku
-//   client: 'pg',
+// const db = knex({
+// client: 'pg',
 //   connection: {
-//  connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }}
-// });
+//     host : '127.0.0.1',
+//     user : 'postgres',
+//     password : '7867',
+//     database : 'chatapp'
+//   }
+// })
+
+const db = knex({           //comment this if using docker // uncomment for heroku
+  client: 'pg',
+  connection: {
+ connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }}
+});
 
 // const db = knex({               // uncomment this if using docker
 // 	client: 'pg',
