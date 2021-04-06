@@ -19,7 +19,9 @@ const server = app.listen( process.env.PORT|| 4000 , ()=>{
 })
 
 
+
 const io = socket(server)
+
 
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
@@ -34,24 +36,24 @@ const key = process.env.ACCU_WEATHER_KEY;
 
 const knex = require('knex')
 
-// const db = knex({
-// client: 'pg',
-//   connection: {
-//     host : '127.0.0.1',
-//     user : 'postgres',
-//     password : '7867',
-//     database : 'chatapp'
-//   }
-// })
-
-const db = knex({           //comment this if using docker // uncomment for postgres
-  client: 'pg',
+const db = knex({
+client: 'pg',
   connection: {
- connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }}
-});
+    host : '127.0.0.1',
+    user : 'postgres',
+    password : '7867',
+    database : 'chatapp'
+  }
+})
+
+// const db = knex({           //comment this if using docker // uncomment for heroku
+//   client: 'pg',
+//   connection: {
+//  connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }}
+// });
 
 // const db = knex({               // uncomment this if using docker
 // 	client: 'pg',
@@ -71,7 +73,7 @@ app.use(express.json());
 
 app.use(bodyParser.json());
 
-const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/','https://quiet-inlet-52952.herokuapp.com/']
+const whitelist = ['http://localhost:3000','https://aamir-proj.herokuapp.com/','https://quiet-inlet-52952.herokuapp.com/','https://aamirproject-api.herokuapp.com/']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -104,7 +106,7 @@ app.post('/payment', (req, res) => {
   });
 
   
-app.post('/weathering',(req,res)=>{ 
+app.post('/weathering',(req,res)=>{  // weatherApi routes
 	
 	const{location} = req.body;
 	const url = 'http://dataservice.accuweather.com/locations/v1/cities/search'
@@ -154,6 +156,7 @@ if (!message ||!userName || !userId || !messageId){
 })
 
 
+
 app.post('/fetchmessages', (req,res)=>{  // fetch message data
 	db.select('messageid','message','name','likes','date','image').from('messages')
 	.orderByRaw('date DESC')
@@ -179,34 +182,120 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		
 	})
 
+	app.post('/addvideoinfo',(req,res)=>{  // add video data to database
+		const{videoId,senderId, receiverId, sender, receiver, receiverJoined, candidate,senderSDP} = req.body;
+
+
+	 db('videochat').returning('*').insert({
+		videoid: videoId,
+		senderid: senderId,
+		receiverid: receiverId,
+		sender: sender,
+		receiver: receiver,
+		receiverjoined: receiverJoined,
+		senderstatus: 'calling',
+		date: new Date().toLocaleString()
+	}) 	.then(data=>{
+			res.json(data[0]);
+		})
+			.catch(err=> res.status(400).json(err))
+	})
+
+
+	
+	app.post('/fetchcallinfo', (req,res)=>{  // fetch message data
+		const { userId } = req.body;
+
+		db.select('videoid','senderid','sender','receiverjoined','senderstatus','date').from('videochat')
+		.where('receiverid', '=' ,userId)
+		.then(message=>{
+			res.json(message);
+		})
+		.catch(err=> res.status(400).json(err))
+		})
+
+
+
+		app.put('/setmissedcall', (req, res) => { // imcrement message likes
+			const{ videoId, } = req.body;
+		if (!videoId){
+		  return res.status(400).json('incorrect form submission')
+		
+		}
+			console.log(videoId)
+	 db('videochat').returning('*').where('videoid','=',videoId)
+			.update({ 'senderstatus': 'missedcall'})
+			.then(data=>{
+				console.log(likes)
+				res.json(data);
+				
+			})
+			 
+			.catch(err=> res.status(400).json(err))
+			})
+
+			app.put('/setAnsweredcall', (req, res) => { // imcrement message likes
+				const{ videoId, } = req.body;
+			if (!videoId){
+			  return res.status(400).json('incorrect form submission')
+			}
+				db('messages').where('videoid', '=', videoId)
+				.update('receiverjoined', 'yes')
+				 
+				.catch(err=> res.status(400).json(err))
+				})
+
 
 
 
 	
-	let rooms = [1,2,3]      // websockets
+	let rooms = [1,2,3]
+    // websockets
 	
+
 	app.post('/fetchrooms', (req,res)=>{  // fetch room data
 		  res.json(rooms);
 		})
 		
 	app.post('/addroom',(req,res)=>{  
 	   let room = req.body.room
+	   if(room === 555){
+		return res.status(400).json('room 555 not allowed')  
+	   }
 	   rooms.push(room)
 	  
 	   })
+
+	   const peers = io.of('videosockets')
+	   let connectedPeers = new Map()
 	
-	 io.on('connection', (socket) => {
+
+
+	 io.on('connection', (socket) => {   // socket connection
 	   let socketRoom;
+	   connectedPeers.set(socket.id,socket)
 	   console.log(`Connected ${socket.id}`);
 	   
+		socket.emit('success','works')
+
 	   socket.on('disconnect', () =>
-		  console.log(`Disconnected ${socket.id}`));
+			
+		  console.log(`Disconnected ${socket.id}`),
+		  connectedPeers.delete(socket.id)
+		  );
 	   
-		  socket.on('join', (room) => {
+		  socket.on('join', (room) => {     
+				  
+			// chat room sockets
 		  console.log(` ${socket.id} joined ${room}`);
 		  socket.join(room);
 		  socketRoom = room;
-	   });
+		  })
+	// 	  socket.on('videojoin',(videoRoom) => {
+	// 	  console.log(` ${socket.id} joined ${videoRoom}`);
+	// 	  socket.join(room);
+	// 	  videoRoom = videoRoom;
+	//    });
 	
 	   socket.on('switch', (data) => {
 		  const { prevRoom, nextRoom } = data;
@@ -214,14 +303,47 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		  if (nextRoom) socket.join(nextRoom);
 		  socketRoom = nextRoom;
 		});
+
+
 	   
 	   socket.on('chat', (data) => {
 		  const { message } = data;
 		  console.log(`message: ${message}, room: ${socketRoom}`);
 		  io.to(socketRoom).emit('chat', message, socketRoom );
 	   });
-	});
+	
+	   
+	   socket.on('begincall', (data) => {
+		const { profileId } = data;
+		console.log(`calling user: ${profileId}`)
+		socket.to(555).emit('begincall', profileId, );
+	 });
 
+	 socket.on('checkjoined', (data) => {
+		const { videoId } = data;
+		console.log(`room: ${videoId}`)
+		socket.broadcast.emit('checkjoined', videoId, );
+	 });
+
+	 socket.on('offer', (data) => {
+		// send to the other peer(s) if any
+
+		const {sdp,videoId} = data;
+		console.log('offer sdp:'+ {sdp} +'rooM : ' + videoId)
+		socket.broadcast.emit('offer',sdp)
+	
+	  })
+
+	  socket.on('oncandidate', (data) => {
+		const { candidate,videoId } = data;
+		console.log(`candidate: ${candidate} room ${videoId}`)
+		socket.broadcast.emit('oncandidate', candidate, );
+	 });
+
+
+
+	  
+	  });
 
 
 
