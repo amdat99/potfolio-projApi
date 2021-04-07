@@ -304,7 +304,11 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		  socketRoom = nextRoom;
 		});
 
-
+		socket.on('onmessage', () => {
+			
+			console.log(`message sent room: ${socketRoom}`);
+			io.to(socketRoom).emit('onmessage', "message" );
+		 });
 	   
 	   socket.on('chat', (data) => {
 		  const { message } = data;
@@ -316,7 +320,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	   socket.on('begincall', (data) => {
 		const { profileId } = data;
 		console.log(`calling user: ${profileId}`)
-		socket.to(555).emit('begincall', profileId, );
+		socket.broadcast.emit('begincall', profileId, );
 	 });
 
 	 socket.on('checkjoined', (data) => {
@@ -330,14 +334,14 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 		const {sdp,videoId} = data;
 		console.log('offer sdp:'+ {sdp} +'rooM : ' + videoId)
-		socket.broadcast.emit('offer',sdp)
+		socket.to(socketRoom).emit('offer',sdp)
 	
 	  })
 
 	  socket.on('oncandidate', (data) => {
 		const { candidate,videoId } = data;
 		console.log(`candidate: ${candidate} room ${videoId}`)
-		socket.broadcast.emit('oncandidate', candidate, );
+		socket.broadcast.emit('oncandidate', candidate );
 	 });
 
 
