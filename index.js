@@ -208,6 +208,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 		db.select('videoid','senderid','sender','receiverjoined','senderstatus','date').from('videochat')
 		.where('receiverid', '=' ,userId)
+		.orderByRaw('date DESC')
 		.then(message=>{
 			res.json(message);
 		})
