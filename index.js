@@ -158,7 +158,7 @@ if (!message ||!userName || !userId || !messageId){
 
 
 app.post('/fetchmessages', (req,res)=>{  // fetch message data
-	db.select('messageid','message','name','likes','date','image').from('messages')
+	db.select('messageid','message','name','likes','date','image','userid').from('messages')
 	.orderByRaw('date DESC')
 	.then(message=>{
 		res.json(message);
