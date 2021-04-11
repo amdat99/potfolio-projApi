@@ -342,7 +342,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	  socket.on('oncandidate', (data) => {
 		const { candidate,videoId } = data;
 		console.log(`candidate: ${candidate} room ${videoId}`)
-		socket.to(socketRoom).emit('oncandidate', candidate );
+		socket.broadcast.emit('oncandidate', candidate );
 	 });
 
 
