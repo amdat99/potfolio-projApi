@@ -312,6 +312,9 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		 });
 	   
 	   socket.on('chat', (data) => {
+		   if(socketRoom === 555){
+			   return
+		   }
 		  const { message } = data;
 		  console.log(`message: ${message}, room: ${socketRoom}`);
 		  io.to(socketRoom).emit('chat', {message: message, room: socketRoom} );
