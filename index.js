@@ -308,15 +308,26 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		socket.on('onmessage', () => {
 			
 			console.log(`message sent room: ${socketRoom}`);
-			io.to(socketRoom).emit('onmessage', "message" );
+			socket.broadcast.emit('onmessage', "message" );
 		 });
 	   
 	   socket.on('chat', (data) => {
 		  const { message } = data;
 		  console.log(`message: ${message}, room: ${socketRoom}`);
-		  io.to(socketRoom).emit('chat', message, socketRoom );
+		  io.to(socketRoom).emit('chat', {message: message, room: socketRoom} );
 	   });
 	
+	   socket.on('onroom', () => {
+		console.log(` new room created room: ${socketRoom}`);
+		socket.broadcast.emit('onroom', 'room' );
+	 });
+
+	 socket.on('profilechange', () => {
+		
+		console.log(` profile change detected`);
+		socket.broadcast.emit('profilechange','profile');
+	 });
+  
 	   
 	   socket.on('begincall', (data) => {
 		const { profileId } = data;
@@ -341,8 +352,8 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 	  socket.on('oncandidate', (data) => {
 		const { candidate,videoId } = data;
-		console.log(`candidate: ${candidate} room ${videoId}`)
-		socket.broadcast.emit('oncandidate', candidate );
+		console.log(`candidate: ${candidate} room ${socketRoom}`)
+		socket.broadcast.emit('oncandidate',candidate,videoId );
 	 });
 
 
