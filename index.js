@@ -33,6 +33,7 @@ if (process.env.NODE_ENV === 'production') {
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const key = process.env.ACCU_WEATHER_KEY;
+const geoKey = process.env.GEO_KEY
 
 const knex = require('knex')
 
@@ -104,6 +105,18 @@ app.post('/payment', (req, res) => {
 	  }
 	});
   });
+
+  app.post('/geodata',(req,res)=>{  // weatherApi routes
+	
+	const{longitude, latitude} = req.body;
+
+	const url = `http://api.positionstack.com/v1/reverse?access_key=${geoKey}&query=${latitude},${longitude}`
+
+	fetch(url)
+	.then(res => res.json())
+	.then(data => res.json(data) )
+   
+		})
 
   
 app.post('/weathering',(req,res)=>{  // weatherApi routes
