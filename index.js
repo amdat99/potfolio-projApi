@@ -160,6 +160,7 @@ if (!message ||!userName || !userId || !messageId){
 		userid: userId,
 		messageid: messageId + Math.random(),
 		image: image,
+		video: video,
 		likes: 0,
 		date: new Date().toLocaleString()
 }) 	.then(data=>{
@@ -171,7 +172,7 @@ if (!message ||!userName || !userId || !messageId){
 
 
 app.post('/fetchmessages', (req,res)=>{  // fetch message data
-	db.select('messageid','message','name','likes','date','image','userid').from('messages')
+	db.select('messageid','message','name','likes','date','image','userid','video').from('messages')
 	.orderByRaw('date DESC')
 	.then(message=>{
 		res.json(message);
