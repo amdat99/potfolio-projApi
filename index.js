@@ -234,7 +234,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	app.post('/addgroupchat',(req,res)=>{  // add messages to database
 		const{groupName, creatorId, groupId, name, userId} = req.body;
 	
-	if ( groupId|| groupName || userId){
+	if ( !groupId|| !groupName || !userId){
 			return res.status(400).json('incorrect form submission')
 		}
 	 db('groupchats').returning('*').insert({
