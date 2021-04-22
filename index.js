@@ -348,7 +348,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 	   const peers = io.of('videosockets')
 
-	
+	   let connectedPeers = new Map()
 
 
 	 io.on('connection', (socket) => {   // socket connection
