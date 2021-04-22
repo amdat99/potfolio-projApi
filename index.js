@@ -252,7 +252,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 	app.post('/fetchgroupchats', (req,res)=>{  // fetch message data
 		const {userId} = req.body;
-		db.select('groupid','groupname','date','name','userid').from('messages')
+		db.select('groupid','groupname','date','name','userid').from('groupchats')
 		.where('userid', '=' ,userId)
 		// .orderByRaw('date DESC')
 		.then(message=>{
