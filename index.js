@@ -181,6 +181,42 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 	})
 
 
+	app.post('/addgroupmessages',(req,res)=>{  // add messages to database
+		const{message,userName, userId, messageId, image,video,groupId} = req.body;
+		const regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
+	
+		if(regex.test(!image)){
+			return res.status(400).json('incorrect form submission')
+		}
+	if (!message ||!userName || !userId || !messageId || groupId){
+			return res.status(400).json('incorrect form submission')
+		}
+	 db('groupmessages').returning('*').insert({
+			message: message,
+			groupid: groupId,
+			name: userName,
+			userid: userId,
+			messageid: messageId + Math.random(),
+			image: image,
+			video: video,
+			likes: 0,
+			date: new Date().toLocaleString()
+	}) 	.then(data=>{
+			res.json(data[0]);
+		})
+			.catch(err=> res.status(400).json(err))
+	})
+
+	app.post('/fetchgroupmessages', (req,res)=>{  // fetch message data
+		const {groupid} = req.body;
+		db.select('messageid','message','name','likes','date','image','userid','video').from('messages')
+		.where('groupid', '=' ,groupid)
+		.orderByRaw('date DESC')
+		.then(message=>{
+			res.json(message);
+		})
+		.catch(err=> res.status(400).json(err))
+		})
 
 app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		const{ messageid } = req.body;
@@ -195,6 +231,35 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		.catch(err=> res.status(400).json(err))
 		
 	})
+	app.post('/addgroupchat',(req,res)=>{  // add messages to database
+		const{groupName, creatorId, groupId, name, userId} = req.body;
+	
+	if ( groupId|| groupName || userId){
+			return res.status(400).json('incorrect form submission')
+		}
+	 db('groupchats').returning('*').insert({
+			groupid: groupId,
+			groupname: groupName,
+			userid: userId,
+			name: name,
+			creatorid: creatorId,
+			date: new Date().toLocaleString()
+	}) 	.then(data=>{
+			res.json(data[0]);
+		})
+			.catch(err=> res.status(400).json(err))
+	})
+
+	app.post('/fetchgroupchats', (req,res)=>{  // fetch message data
+		const {userId} = req.body;
+		db.select('groupid','groupname','date','name','userid').from('messages')
+		.where('userid', '=' ,userId)
+		.orderByRaw('date DESC')
+		.then(message=>{
+			res.json(message);
+		})
+		.catch(err=> res.status(400).json(err))
+		})
 
 	app.post('/addvideoinfo',(req,res)=>{  // add video data to database
 		const{videoId,senderId, receiverId, sender, receiver, receiverJoined, candidate,senderSDP} = req.body;
@@ -282,7 +347,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 	   })
 
 	   const peers = io.of('videosockets')
-	   let connectedPeers = new Map()
+
 	
 
 
@@ -380,7 +445,5 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 
 
 
-
-// login => post
-// send messgae -> post 
+// send messge -> post 
 // message box -> get message
