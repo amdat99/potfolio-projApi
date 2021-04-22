@@ -254,7 +254,7 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		const {userId} = req.body;
 		db.select('groupid','groupname','date','name','userid').from('messages')
 		.where('userid', '=' ,userId)
-		.orderByRaw('date DESC')
+		// .orderByRaw('date DESC')
 		.then(message=>{
 			res.json(message);
 		})
