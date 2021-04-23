@@ -218,6 +218,16 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 		.catch(err=> res.status(400).json(err))
 		})
 
+		app.post('/fetchgroupdata', (req,res)=>{  // fetch message data
+			const {groupid} = req.body;
+			db.select('groupid','groupname','date','name','userid').from('groupchats')
+		.where('groupid', '=' ,groupid)
+			.then(message=>{
+				res.json(message);
+			})
+			.catch(err=> res.status(400).json(err))
+			})
+
 app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		const{ messageid } = req.body;
 	if (!messageid){
