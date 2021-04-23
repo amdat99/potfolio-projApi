@@ -211,7 +211,7 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 		const {groupid} = req.body;
 		db.select('messageid','message','name','likes','date','image','userid','video').from('messages')
 		.where('groupid', '=' ,groupid)
-		.orderByRaw('date DESC')
+		// .orderByRaw('date DESC')
 		.then(message=>{
 			res.json(message);
 		})
