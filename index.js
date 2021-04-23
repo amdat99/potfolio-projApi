@@ -209,9 +209,9 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 
 	app.post('/fetchgroupmessages', (req,res)=>{  // fetch message data
 		const {groupid} = req.body;
-		db.select('messageid','message','name','likes','date','image','userid','video').from('messages')
+		db.select('messageid','message','name','likes','date','image','userid','video').from('groupmessages')
 		.where('groupid', '=' ,groupid)
-		// .orderByRaw('date DESC')
+		.orderByRaw('date DESC')
 		.then(message=>{
 			res.json(message);
 		})
