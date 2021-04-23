@@ -185,9 +185,9 @@ app.post('/fetchmessages', (req,res)=>{  // fetch message data
 		const{message,userName, userId, messageId, image,video,groupId} = req.body;
 		const regex = new RegExp("^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_\+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?");
 	
-		if(regex.test(!image)){
-			return res.status(400).json('incorrect form submission')
-		}
+		// if(regex.test(!image)){
+		// 	return res.status(400).json('incorrect form submission')
+		// }
 	if (!message ||!userName || !userId || !messageId || groupId){
 			return res.status(400).json('incorrect form submission')
 		}
