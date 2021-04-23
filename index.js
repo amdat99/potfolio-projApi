@@ -271,6 +271,20 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 		.catch(err=> res.status(400).json(err))
 		})
 
+		app.put('/incrementgrouplikes', (req, res) => { // imcrement message likes
+			const{ messageid } = req.body;
+		if (!messageid){
+		  return res.status(400).json('incorrect form submission')
+		}
+			db('groupmessages').where('messageid', '=', messageid)
+			.increment('likes', 1)
+			 .then(likes=>{
+				res.json(likes[0]);
+			})
+			.catch(err=> res.status(400).json(err))
+			
+		})
+
 	app.post('/addvideoinfo',(req,res)=>{  // add video data to database
 		const{videoId,senderId, receiverId, sender, receiver, receiverJoined, candidate,senderSDP} = req.body;
 
