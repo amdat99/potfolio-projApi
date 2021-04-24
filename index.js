@@ -413,7 +413,11 @@ app.put('/incrementlikes', (req, res) => { // imcrement message likes
 			console.log(`message sent room: ${socketRoom}`);
 			socket.broadcast.emit('onmessage', "message" );
 		 });
-	   
+		 socket.on('ongroupmessage', () => {
+			
+			console.log(` group message sent room: ${socketRoom}`);
+			socket.broadcast.emit('ongroupmessage', "message" );
+		 });
 	   socket.on('chat', (data) => {
 		   if(socketRoom === 555){
 			   return
